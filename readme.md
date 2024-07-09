@@ -1,5 +1,7 @@
 Ce dossier a été créé suite pour le direct réalisé sur Twitch le 25 juin 2024 à 14h : https://www.twitch.tv/videos/2181295529    
 
+**Le son est en double au début mais cela s'arrête au bout de 2 minutes, désolée pour le soucis 😅**
+  
 Lors de ce live j'ai montré comment réaliser des jointures avec le package `{dplyr}`.
 Cela peu paraître assez facile à faire. En effet, il y a une fonction par type de jointure et la [page d'aide](https://dplyr.tidyverse.org/reference/mutate-joins.html) est bien détaillée. 
 
