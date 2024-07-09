@@ -50,7 +50,7 @@ temperature <- read_delim("https://www.data.gouv.fr/fr/datasets/r/dd0df06a-85f2-
 
 
 ## Densité de population par départements  
-ainsi que les [données de densités par départements](https://www.insee.fr/fr/statistiques/6683035?sommaire=6683037).  
+Ainsi que les [données de densités par départements](https://www.insee.fr/fr/statistiques/6683035?sommaire=6683037).  
 ```{r}
 
 download.file("https://www.insee.fr/fr/statistiques/fichier/6683035/ensemble.zip", destfile = "data_raw/insee.zip", mode = "wb") 
@@ -68,7 +68,7 @@ file.remove("data_raw/insee.zip")
 Pour coupler des informations présentes dans différentes tables pour explorer le lien, par exemple les variations de températures en fonction de la densité de population.  
   
 ## Problème  
-Pour que les jointures se passent bien, il faut que les informations présentes dans une table correspondent à celles présente dans l'autre !  
+Pour que les jointures se passent bien, il faut que les informations présentes dans une table correspondent à celles présentes dans l'autre !  
   
 ## Différents types de jointures  
 Prenons deux tables :   
@@ -89,18 +89,26 @@ Prenons deux tables :
 
 ```
   
-On veut avoir les informations `r letters[23:26]` pour tous les individus -> jointure totale avec `full_join()` de `{dplyr}`  
+On veut avoir les informations `r letters[23:26]` pour tous les individus -> **jointure totale** avec `full_join()` de `{dplyr}`  
   
 ```{r}
 full_join(A, B)
 ```
-
-On veut que les lignes des individus présents dans les deux tableaux -> jointure interne avec `inner_join()` de `{dplyr}`  
+ 
+On veut que les lignes des individus présents dans les deux tableaux -> **jointure interne** avec `inner_join()` de `{dplyr}`  
 ```{r}
 inner_join(A, B)
 ```
+  
+On veut toutes les caractéristiques disponibles pour les individus d'une des deux tables -> **jointure à gauche** ou **à droite** avec `left_join()` et `right_join()` de `{dplyr}`. Le sens de la jointure a une influence dans l'ordre des tables mais fait la même chose si on inverse l'ordre, seules les colonnes ne seront pas dans le même ordre.  
+  
 
-On veut toutes les caractéristiques disponibles pour les individus d'une des deux tables -> jointure à gauche ou à droite avec `left_join()` et `right_join()` de `{dplyr}`. Le sens de la jointure a une influence dans l'ordre des tables mais fait la même chose si on inverse l'ordre  
+::: callout-note
+## Pour réorganiser les colonnes  
+
+Il est possible d'utiliser la fonction `relocate()` du package `{dplyr}`.  
+:::   
+  
 ```{r}
 left_join(A, B)
 right_join(B, A)
@@ -119,7 +127,8 @@ right_join(A, B)
 
 ```
 
-On veut les individus qui ne sont pas présent dans l'autre table -> anti-jointure avec `anti_join()` de `{dplyr}`. L'ordre à son importance, ce sont les individus de la première table qui ne sont pas présent dans la deuxième qui sortent.  
+On veut les individus qui ne sont pas présent dans l'autre table -> **anti-jointure** avec `anti_join()` de `{dplyr}`.  
+L'ordre à son importance, ce sont les individus de la première table qui ne sont pas présent dans la deuxième qui sortent.  
 ```{r}
 anti_join(A, B)
 
@@ -136,16 +145,17 @@ La clé peut être basé sur une ou plusieurs colonnes.
 glimpse(info_departement)
 glimpse(temperature)
 ```
-
+  
 Ici : `DEP` == `departement`    
   
 ## Même type d'objets  
-Les données doivent-être de même type donc vérification de la classe des clés est indispensable.  
+Les données doivent-être de même type donc la vérification de la classe des clés est indispensable.  
 ```{r}
 class(info_departement$DEP) == class(temperature$departement)
 ```
   
 ## Présence de doublons  
+La détection des doublons se fait facilement grâce à la fonction `count()` de `{dplyr}`.  
 ```{r}
 info_departement |> 
   count(DEP) |> 
@@ -159,6 +169,7 @@ temperature |>
 
 
 ## Présence de valeurs manquantes  
+L'utilisation conjuguée de la fonction `is.na()` du package `{base}` dans la fonction `filter()` de `{dplyr}` permet de trier facilement les lignes avec des valeurs manquantes.  
 ```{r}
 info_departement |> 
   filter(is.na(DEP))
@@ -168,10 +179,10 @@ temperature |>
 
 ```
 
-Ce n'est pas nécessairement un problème d'avoir des doublons ou des valeurs manquantes mais il faut que cela correspondent à ce que l'on souhaite faire.  
+Ce n'est pas nécessairement un problème **d'avoir des doublons** ou **des valeurs manquantes** mais il faut que cela correspondent à ce que l'on souhaite faire.  
   
 # Jointure total avec `full_join()` 
-## Réalisation de différents types de jointure  
+## Réalisation de la jointure  
 ```{r}
 jointure_total <- full_join(
   info_departement,
@@ -180,7 +191,7 @@ jointure_total <- full_join(
   )
 
 ```
-
+  
 ## Vérification de la table crée  
 Calcul de la taille attendue  
 ```{r}
@@ -196,7 +207,7 @@ nrow(temperature) == nrow(jointure_total)
 
 ```
   
-Recherche des `NA`  
+## Recherche des `NA`  
 ```{r}
 jointure_total |> 
   filter(is.na(CODREG))
@@ -207,6 +218,7 @@ jointure_total |>
 
 ```
 
+## Utilisation de l'anti-jointure  
 Possibilité d'utiliser l'anti-jointure pour identifier les lignes à problème  
 ```{r}
 
