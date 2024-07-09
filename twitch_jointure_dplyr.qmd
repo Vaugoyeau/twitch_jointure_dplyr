@@ -59,7 +59,7 @@ unzip("data_raw/insee.zip",exdir = "data_raw")
 
 info_departement <- read_delim("data_raw/donnees_departements.csv", delim =";")
 
-file.remove("data_raw/insee.zip")
+file.remove(glue::glue("data_raw/{list.files('data_raw')}"))
 ```
 
 
@@ -163,7 +163,7 @@ info_departement |>
 
 temperature |> 
   count(departement) |> 
-  filter(n != 77)
+  filter(n != 78)
 
 ```
 
@@ -262,7 +262,7 @@ identical(jointure_a_droite, jointure_interne)
 
 jointure_a_droite |> 
   count(DEP) |> 
-  filter(n != 77)
+  filter(n != 78)
 
 ```
   
